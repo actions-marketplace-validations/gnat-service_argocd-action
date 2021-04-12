@@ -1,0 +1,75 @@
+name: gnat-service/argocd
+author: leaf4monkey
+description: 'Setup argocd'
+inputs:
+  grpcWeb:
+    description: 'Use "grpc-web" option when login'
+    required: false
+  additionalLoginOptions:
+    description: 'Additional login options'
+    required: false
+    default: ''
+  server:
+    description: 'The argocd server to login with'
+    required: true
+  username:
+    description: 'A argocd username'
+    required: true
+  password:
+    description: 'Password for the assigned argocd username'
+    required: true
+  subcommand:
+    description: 'The very first command after argocd cli setup'
+    required: false
+  subcommandArgs:
+    description: 'The exec args for first command after argocd cli setup'
+    required: false
+    default: ''
+  echoOnly:
+    description: 'Echo login and subcommand rather then execute them'
+    required: false
+    default: ''
+
+outputs:
+  argocd:
+    description: "Argocd path"
+    value: ${{ steps.setup-argocd.outputs.argocd }}
+runs:
+  using: "composite"
+  steps:
+    - name: Setup ArgoCD Cli
+      id: setup-argocd
+      shell: bash
+      run: |
+        curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
+        chmod +x /tmp/argocd
+        if [[ "${{ input.echoOnly }}" ]]; then
+          /tmp/argocd help
+        fi
+
+        echo "::set-output name=argocd::/tmp/argocd"
+        echo $ARGOCD_SERVER
+        OPTIONS=""
+        if [[ "${{ inputs.grpcWeb }}" == "true" ]]; then
+          OPTIONS="--grpc-web"
+        fi
+
+        if [[ -n "${{ inputs.additionalLoginOptions }}"  ]]; then
+          OPTIONS="$OPTIONS ${{ inputs.additionalLoginOptions }}"
+        fi
+
+        cmd="/tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS"
+        if [[ "${{ input.echoOnly }}" ]]; then
+          echo $cmd
+        else
+          $cmd
+        fi
+
+        if [[ -n "${{ inputs.subcommand }}" ]]; then
+          subcmd="/tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }}"
+          if [[ "${{ input.echoOnly }}" ]]; then
+            echo $subcmd
+          else
+            $subcmd
+          fi
+        fi
