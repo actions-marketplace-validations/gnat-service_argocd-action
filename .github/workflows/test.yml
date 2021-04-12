@@ -19,4 +19,9 @@ jobs:
           subcommandArgs: "list"
           echoOnly: true
       - name: Check ArgoCD Cli
-        run: which ${{ steps.hello.outputs.argocd }}
+        run: |
+          RESULT=$(which ${{ steps.hello.outputs.argocd }})
+          if [[ "$RESULT" != "/tmp/argocd" ]]; then
+            echo "Expect steps.hello.outputs.argocd to be '/tmp/argocd'"
+            exit 1
+          fi
