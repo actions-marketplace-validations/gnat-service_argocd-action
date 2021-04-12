@@ -34,6 +34,7 @@ outputs:
   argocd:
     description: "Argocd path"
     value: ${{ steps.setup-argocd.outputs.argocd }}
+
 runs:
   using: "composite"
   steps:
@@ -43,7 +44,7 @@ runs:
       run: |
         curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
         chmod +x /tmp/argocd
-        if [[ "${{ input.echoOnly }}" ]]; then
+        if [[ "${{ inputs.echoOnly }}" ]]; then
           /tmp/argocd help
         fi
 
@@ -59,7 +60,7 @@ runs:
         fi
 
         cmd="/tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS"
-        if [[ "${{ input.echoOnly }}" ]]; then
+        if [[ "${{ inputs.echoOnly }}" ]]; then
           echo $cmd
         else
           $cmd
@@ -67,7 +68,7 @@ runs:
 
         if [[ -n "${{ inputs.subcommand }}" ]]; then
           subcmd="/tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }}"
-          if [[ "${{ input.echoOnly }}" ]]; then
+          if [[ "${{ inputs.echoOnly }}" ]]; then
             echo $subcmd
           else
             $subcmd
