@@ -1,6 +1,9 @@
 name: gnat-service/argocd
 author: leaf4monkey
 description: 'Setup argocd'
+branding:
+  icon: 'aperture'
+  color: 'green'
 inputs:
   grpcWeb:
     description: 'Use "grpc-web" option when login'
