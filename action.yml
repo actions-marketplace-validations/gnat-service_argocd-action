@@ -74,6 +74,7 @@ runs:
           echo $cmd
         else
           echo 'Logging in...'
+          echo '"'$cmd'"'
           $cmd
         fi
 
