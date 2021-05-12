@@ -69,20 +69,8 @@ runs:
           OPTIONS="$OPTIONS $CONFIG_FILE_OPT"
         fi
 
-        cmd="/tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS"
-        if [[ -n "${{ inputs.echoOnly }}" ]]; then
-          echo $cmd
-        else
-          echo 'Logging in...'
-          echo '"'$cmd'"'
-          $cmd
-        fi
+        /tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS
 
         if [[ -n "${{ inputs.subcommand }}" ]]; then
-          subcmd="/tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }} $OPTIONS"
-          if [[ "${{ inputs.echoOnly }}" ]]; then
-            echo $subcmd
-          else
-            $subcmd
-          fi
+          /tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }} $OPTIONS
         fi
