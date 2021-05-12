@@ -8,6 +8,9 @@ inputs:
   grpcWeb:
     description: 'Use "grpc-web" option when login'
     required: false
+  config:
+    description: 'Specify a config file ($HOME/.argocd/config by default)'
+    required: false
   additionalLoginOptions:
     description: 'Additional login options'
     required: false
@@ -50,6 +53,10 @@ runs:
         if [[ "${{ inputs.echoOnly }}" ]]; then
           /tmp/argocd help
         fi
+        CONFIG_FILE_OPT=""
+        if [[ -n "${{ inputs.config }}" ]]; then
+          CONFIG_FILE_OPT="--config ${{ inputs.config }}"
+        fi
 
         echo "::set-output name=argocd::/tmp/argocd"
         echo $ARGOCD_SERVER
@@ -59,18 +66,18 @@ runs:
         fi
 
         if [[ -n "${{ inputs.additionalLoginOptions }}"  ]]; then
-          OPTIONS="$OPTIONS ${{ inputs.additionalLoginOptions }}"
+          OPTIONS="$OPTIONS $CONFIG_FILE_OPT"
         fi
 
         cmd="/tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS"
-        if [[ "${{ inputs.echoOnly }}" ]]; then
+        if [[ -n "${{ inputs.echoOnly }}" ]]; then
           echo $cmd
         else
           $cmd
         fi
 
         if [[ -n "${{ inputs.subcommand }}" ]]; then
-          subcmd="/tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }}"
+          subcmd="/tmp/argocd ${{ inputs.subcommand }} ${{ inputs.subcommandArgs }} $OPTIONS"
           if [[ "${{ inputs.echoOnly }}" ]]; then
             echo $subcmd
           else

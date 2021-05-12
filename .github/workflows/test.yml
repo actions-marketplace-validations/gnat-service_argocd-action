@@ -11,13 +11,13 @@ jobs:
         id: hello
         with:
           grpcWeb: true
-          additionalLoginOptions: "--config /tmp/.argocd/config"
-          server: "argocd.fake.com"
-          username: "fakeuser"
-          password: "fakepwd"
+          config: "/tmp/.argocd/config"
+          server: "${{ secrets.ARGOCD_HOST }}"
+          username: "${{ secrets.ARGOCD_USERNAME }}"
+          password: "${{ secrets.ARGOCD_PASSWORD }}"
           subcommand: "app"
           subcommandArgs: "list"
-          echoOnly: true
+          # echoOnly: true
       - name: Check ArgoCD Cli
         run: |
           RESULT=$(which ${{ steps.hello.outputs.argocd }})
