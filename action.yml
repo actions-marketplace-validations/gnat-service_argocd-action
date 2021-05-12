@@ -73,6 +73,7 @@ runs:
         if [[ -n "${{ inputs.echoOnly }}" ]]; then
           echo $cmd
         else
+          echo 'Logging in...'
           $cmd
         fi
 
