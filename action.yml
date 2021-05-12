@@ -31,10 +31,6 @@ inputs:
     description: 'The exec args for first command after argocd cli setup'
     required: false
     default: ''
-  echoOnly:
-    description: 'Echo login and subcommand rather then execute them'
-    required: false
-    default: ''
 
 outputs:
   argocd:
@@ -50,16 +46,12 @@ runs:
       run: |
         curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
         chmod +x /tmp/argocd
-        if [[ "${{ inputs.echoOnly }}" ]]; then
-          /tmp/argocd help
-        fi
         CONFIG_FILE_OPT=""
         if [[ -n "${{ inputs.config }}" ]]; then
           CONFIG_FILE_OPT="--config ${{ inputs.config }}"
         fi
 
         echo "::set-output name=argocd::/tmp/argocd"
-        curl ${{ inputs.server }}
         OPTIONS=""
         if [[ "${{ inputs.grpcWeb }}" == "true" ]]; then
           OPTIONS="--grpc-web"

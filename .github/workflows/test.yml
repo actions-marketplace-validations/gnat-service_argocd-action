@@ -12,12 +12,11 @@ jobs:
         with:
           grpcWeb: true
           config: "/tmp/.argocd/config"
-          server: "argocd.markableai.cn"
+          server: "argocd.fake.com"
           username: "${{ secrets.ARGOCD_USERNAME }}"
           password: "${{ secrets.ARGOCD_PASSWORD }}"
           subcommand: "app"
           subcommandArgs: "list"
-          # echoOnly: true
       - name: Check ArgoCD Cli
         run: |
           RESULT=$(which ${{ steps.hello.outputs.argocd }})
