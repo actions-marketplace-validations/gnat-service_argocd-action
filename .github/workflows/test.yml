@@ -10,9 +10,9 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: hello
         with:
-          grpcWeb: true
+          # grpcWeb: true
           config: "/tmp/.argocd/config"
-          server: "${{ secrets.ARGOCD_HOST }}"
+          server: "argocd.markableai.cn"
           username: "${{ secrets.ARGOCD_USERNAME }}"
           password: "${{ secrets.ARGOCD_PASSWORD }}"
           subcommand: "app"
