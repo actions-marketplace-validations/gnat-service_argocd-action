@@ -59,7 +59,7 @@ runs:
         fi
 
         echo "::set-output name=argocd::/tmp/argocd"
-        echo ${{ inputs.server }}
+        curl ${{ inputs.server }}
         OPTIONS=""
         if [[ "${{ inputs.grpcWeb }}" == "true" ]]; then
           OPTIONS="--grpc-web"
