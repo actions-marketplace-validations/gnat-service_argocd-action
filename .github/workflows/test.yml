@@ -17,6 +17,7 @@ jobs:
           password: "${{ secrets.ARGOCD_PASSWORD }}"
           subcommand: "app"
           subcommandArgs: "list"
+          dryRun: true
       - name: Check ArgoCD Cli
         run: |
           RESULT=$(which ${{ steps.hello.outputs.argocd }})

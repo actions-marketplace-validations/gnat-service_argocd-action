@@ -31,6 +31,10 @@ inputs:
     description: 'The exec args for first command after argocd cli setup'
     required: false
     default: ''
+  dryRun:
+    description: 'Stop to run the argocd commands'
+    required: false
+    default: ''
 
 outputs:
   argocd:
@@ -46,10 +50,6 @@ runs:
       run: |
         curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
         chmod +x /tmp/argocd
-        CONFIG_FILE_OPT=""
-        if [[ -n "${{ inputs.config }}" ]]; then
-          CONFIG_FILE_OPT="--config ${{ inputs.config }}"
-        fi
 
         echo "::set-output name=argocd::/tmp/argocd"
         OPTIONS=""
@@ -57,8 +57,11 @@ runs:
           OPTIONS="--grpc-web"
         fi
 
-        if [[ -n "${{ inputs.additionalLoginOptions }}"  ]]; then
-          OPTIONS="$OPTIONS $CONFIG_FILE_OPT"
+        if [[ -n "${{ inputs.config }}"  ]]; then
+          OPTIONS="$OPTIONS --config ${{ inputs.config }}"
+        fi
+        if [[ "${{ inputs.dryRun }}" == "true" ]]; then
+          OPTIONS="$OPTIONS --help"
         fi
 
         /tmp/argocd login '${{ inputs.server }}' --username '${{ inputs.username }}' --password '${{ inputs.password }}' $OPTIONS
